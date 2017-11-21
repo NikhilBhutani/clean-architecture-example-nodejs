@@ -59,6 +59,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# NPM lock
+package-lock.json
+
 ### Archives template
 # It's better to unpack these files and commit the raw source because
 # git has its own built in compression methods.
