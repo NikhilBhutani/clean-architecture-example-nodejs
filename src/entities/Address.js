@@ -28,6 +28,9 @@ const { attributes } = require("structure"),
         },
       })(
         class Address {
+          get singleLineFormat () {
+            return `${this.streetNumber} ${this.streetName}, ${this.city}, ${this.state} ${this.zipCode}`;
+          }
         },
       );
 

@@ -9,6 +9,22 @@ const Code = require("code"),
       fakeAddress                            = require("src/entities/Address");
 
 suite(`Entity :: Address`, () => {
+  let fakeValidAddressAttrs;
+
+  beforeEach(async () => {
+    fakeValidAddressAttrs = {
+      streetNumber: 42,
+      streetName:   "Any Fake Street Name",
+      city:         "Any Fake City Name",
+      state:        "Any Fake State",
+      zipCode:      42424,
+    };
+  });
+
+  afterEach(async () => {
+    fakeValidAddressAttrs = {};
+  });
+
   suite(`class`, () => {
     test(`should be defined when instantiated with an empty Object`, async () => {
       // Conditions
@@ -21,23 +37,63 @@ suite(`Entity :: Address`, () => {
     });
   });
 
+  suite(`method`, () => {
+    suite(`getter singleLineFormat`, () => {
+      test(`should be defined with a valid instantiation`, async () => {
+        // Conditions
+        const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate
+        const fakeSerialized = fakeAddressEntity.toJSON();
+        const fakeResponse   = fakeAddressEntity.singleLineFormat;
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeSerialized).
+          and.to.contain([
+            "streetNumber",
+            "streetName",
+            "city",
+            "state",
+            "zipCode",
+          ],
+        );
+        expect(fakeResponse).
+          and.not.to.be.undefined();
+      });
+
+      test(`should return a single line formatted string correctly`, async () => {
+        // Conditions
+        const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate
+        const fakeSerialized = fakeAddressEntity.toJSON();
+        const fakeResponse   = fakeAddressEntity.singleLineFormat;
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeSerialized).
+          and.to.contain([
+            "streetNumber",
+            "streetName",
+            "city",
+            "state",
+            "zipCode",
+          ],
+        );
+        expect(fakeResponse).
+          and.to.be.a.string().
+          and.not.to.be.empty().
+          and.to.equal("42 Any Fake Street Name, Any Fake City Name, Any Fake State 42424");
+      });
+    });
+  });
+
   suite(`field`, () => {
-    let fakeValidAddressAttrs;
-
-    beforeEach(async () => {
-      fakeValidAddressAttrs = {
-        streetNumber: 42,
-        streetName:   "Any Fake Street Name",
-        city:         "Any Fake City Name",
-        state:        "Any Fake State",
-        zipCode:      42424,
-      };
-    });
-
-    afterEach(async () => {
-      fakeValidAddressAttrs = {};
-    });
-
     suite(`streetNumber`, () => {
       const fieldNameToTest = "streetNumber";
 
