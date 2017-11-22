@@ -1,5 +1,10 @@
 const Address = require("src/entities/Address");
 
+class GeocodingInterface {
+  fromAddress (addressEntity) {
+  }
+}
+
 class GeocodingInteractor {
   constructor ({ geocoder }) {
     this.geoCodeFromAddress = geocoder.fromAddress;
@@ -18,4 +23,7 @@ class GeocodingInteractor {
   }
 }
 
-module.exports = GeocodingInteractor;
+module.exports = {
+  GeocodingInterface,
+  GeocodingInteractor,
+};
