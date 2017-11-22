@@ -15,6 +15,10 @@ const { attributes } = require("structure"),
           type:     String,
           required: true,
         },
+        state:        {
+          type:     String,
+          required: true,
+        },
       })(
         class Address {
         },
