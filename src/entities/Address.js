@@ -11,6 +11,10 @@ const { attributes } = require("structure"),
           type:     String,
           required: true,
         },
+        city:         {
+          type:     String,
+          required: true,
+        },
       })(
         class Address {
         },
