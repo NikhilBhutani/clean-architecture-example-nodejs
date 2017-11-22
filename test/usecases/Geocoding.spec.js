@@ -18,10 +18,23 @@ suite(`Usecase :: Geocoding`, () => {
     zipCode:      42424,
   };
 
+  const fakeValidCoordinatesAttrs = {
+    longitude: 42,
+    latitude:  42,
+  };
+
+  const fakeConstructorParams = {
+    geocoder: {
+      fromAddress: async function fakeFromAddress () {
+        return fakeValidCoordinatesAttrs;
+      },
+    },
+  };
+
   suite(`class`, () => {
-    test(`should be defined when instantiated with no injected dependencies`, async () => {
+    test(`should be defined when instantiated with all injected dependencies`, async () => {
       // Conditions
-      const fakeGeocodingInteractor = new fakeGeocoding();
+      const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
 
       // Assertions
       expect(fakeGeocodingInteractor).
@@ -30,11 +43,28 @@ suite(`Usecase :: Geocoding`, () => {
     });
   });
 
+  suite(`public member`, () => {
+    suite(`geoCodeFromAddress()`, () => {
+      test(`should be defined as a function when all injected dependencies`, async () => {
+        // Conditions
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeGeocoding);
+        expect(fakeGeocodingInteractor.geoCodeFromAddress).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+    });
+  });
+
   suite(`static public method`, () => {
     suite(`validateAddress()`, () => {
       test(`should not be undefined when class is correctly instantiated`, async () => {
         // Conditions
-        const fakeGeocodingInteractor = new fakeGeocoding();
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
 
         // Assertions
         expect(fakeGeocodingInteractor).
@@ -46,7 +76,7 @@ suite(`Usecase :: Geocoding`, () => {
 
       test(`should return false when addressData argument is undefined`, () => {
         // Conditions
-        const fakeGeocodingInteractor = new fakeGeocoding();
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
         const fakeResponse            = fakeGeocoding.validateAddress();
 
         // Assertions
@@ -60,7 +90,7 @@ suite(`Usecase :: Geocoding`, () => {
 
       test(`should return false when addressData argument is null`, () => {
         // Conditions
-        const fakeGeocodingInteractor = new fakeGeocoding();
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
         const fakeResponse            = fakeGeocoding.validateAddress(null);
 
         // Assertions
@@ -74,7 +104,7 @@ suite(`Usecase :: Geocoding`, () => {
 
       test(`should return false when addressData argument is empty`, () => {
         // Conditions
-        const fakeGeocodingInteractor = new fakeGeocoding();
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
         const fakeResponse            = fakeGeocoding.validateAddress({});
 
         // Assertions
@@ -88,7 +118,7 @@ suite(`Usecase :: Geocoding`, () => {
 
       test(`should return a valid addressEntity when addressData argument is valid`, () => {
         // Conditions
-        const fakeGeocodingInteractor = new fakeGeocoding();
+        const fakeGeocodingInteractor = new fakeGeocoding(fakeConstructorParams);
         const fakeResponse            = fakeGeocoding.validateAddress(fakeValidAddressAttrs);
 
         // Assertions
