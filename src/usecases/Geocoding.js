@@ -1,7 +1,10 @@
-const Address = require("src/entities/Address");
+const
+  Address     = require("src/entities/Address"),
+  Coordinates = require("src/entities/Coordinates");
+
 
 class GeocodingInterface {
-  fromAddress (addressEntity) {
+  fromAddress (singleLineAddress) {
   }
 }
 
@@ -10,16 +13,33 @@ class GeocodingInteractor {
     this.geoCodeFromAddress = geocoder.fromAddress;
   }
 
+  async getCoordinates (addressData) {
+    const addressEntity    = GeocodingInteractor.validateAddress(addressData);
+    const coordinatesAttrs = await this.geoCodeFromAddress(addressEntity.singleLineAddress);
+
+    if (false !== addressEntity && false !== coordinatesAttrs) {
+      const coordinatesEntity = new Coordinates(coordinatesAttrs);
+
+      const { valid: isValidCoordinates, errors: validationErrors } = coordinatesEntity.validate();
+      if (isValidCoordinates) {
+        return coordinatesEntity;
+      }
+    }
+
+    // TODO: Add some logging
+    return false;
+  }
+
   static validateAddress (addressData) {
     const addressEntity = new Address(addressData);
 
     const { valid: isValidAddress, errors: validationErrors } = addressEntity.validate();
-    if (!isValidAddress) {
-      // TODO: Add some logging
-      return isValidAddress;
+    if (isValidAddress) {
+      return addressEntity;
     }
 
-    return addressEntity;
+    // TODO: Add some logging
+    return isValidAddress;
   }
 }
 

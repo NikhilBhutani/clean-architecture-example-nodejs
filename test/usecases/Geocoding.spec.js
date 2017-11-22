@@ -7,6 +7,7 @@ const Code = require("code"),
       { suite, test, beforeEach, afterEach } = lab,
 
       fakeAddressEntity                      = require("src/entities/Address"),
+      fakeCoordinatesEntity                  = require("src/entities/Coordinates"),
       {
         GeocodingInterface:  fakeDefaultGeocodingInterface,
         GeocodingInteractor: fakeDefaultGeocodingInteractor,
@@ -29,7 +30,7 @@ suite(`Usecase :: Geocoding`, () => {
 
   const fakeConstructorParams = {
     geocoder: {
-      fromAddress: async function fakeFromAddress () {
+      fromAddress: async function fakeFromAddress (singleLineAddress) {
         return fakeValidCoordinatesAttrs;
       },
     },
@@ -80,6 +81,103 @@ suite(`Usecase :: Geocoding`, () => {
         expect(fakeGeocodingInteractor.geoCodeFromAddress).
           and.not.to.be.undefined().
           and.to.be.a.function();
+      });
+    });
+
+    suite(`getCoordinates()`, () => {
+      test(`should be defined`, async () => {
+        // Conditions
+        const fakeGeocodingInteractor = new fakeDefaultGeocodingInteractor(fakeConstructorParams);
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeDefaultGeocodingInteractor);
+        expect(fakeGeocodingInteractor.getCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+
+      test(`should return "false" when input addressData is invalid`, async () => {
+        // Conditions
+        const fakeGeocodingInteractor = new fakeDefaultGeocodingInteractor(fakeConstructorParams);
+        const fakeResponse            = await fakeGeocodingInteractor.getCoordinates();
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeDefaultGeocodingInteractor);
+        expect(fakeGeocodingInteractor.getCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.to.be.a.boolean().
+          and.to.be.false();
+      });
+
+      test(`should NOT return "false" when input addressData is valid`, async () => {
+        // Conditions
+        const fakeGeocodingInteractor = new fakeDefaultGeocodingInteractor(fakeConstructorParams);
+        const fakeResponse            = await fakeGeocodingInteractor.getCoordinates(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeDefaultGeocodingInteractor);
+        expect(fakeGeocodingInteractor.getCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.not.to.be.a.boolean().
+          and.not.to.be.false();
+      });
+
+      test(`should return "coordinates" when input addressData is valid`, async () => {
+        // Conditions
+        const fakeGeocodingInteractor = new fakeDefaultGeocodingInteractor(fakeConstructorParams);
+        const fakeResponse            = await fakeGeocodingInteractor.getCoordinates(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeDefaultGeocodingInteractor);
+        expect(fakeGeocodingInteractor.getCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.to.be.an.instanceof(fakeCoordinatesEntity);
+        expect(fakeResponse.toJSON()).
+          and.to.be.an.object().
+          and.to.contain([
+            "longitude",
+            "latitude",
+          ],
+        );
+      });
+
+      test(`should NOT return "coordinates" when coordinates are "invalid"`, async () => {
+        // Conditions
+        const fakeConstructor         = {
+          geocoder: {
+            fromAddress: async function fakeFromAddress (singleLineAddress) {
+              return {};
+            },
+          },
+        };
+        const fakeGeocodingInteractor = new fakeDefaultGeocodingInteractor(fakeConstructor);
+        const fakeResponse            = await fakeGeocodingInteractor.getCoordinates(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeGeocodingInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeDefaultGeocodingInteractor);
+        expect(fakeGeocodingInteractor.getCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.not.to.be.an.instanceof(fakeCoordinatesEntity).
+          and.to.be.a.boolean().
+          and.to.be.false();
       });
     });
   });

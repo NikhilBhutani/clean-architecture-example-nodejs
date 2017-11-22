@@ -38,14 +38,14 @@ suite(`Entity :: Address`, () => {
   });
 
   suite(`method`, () => {
-    suite(`getter singleLineFormat`, () => {
+    suite(`getter singleLineAddress`, () => {
       test(`should be defined with a valid instantiation`, async () => {
         // Conditions
         const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate
         const fakeSerialized = fakeAddressEntity.toJSON();
-        const fakeResponse   = fakeAddressEntity.singleLineFormat;
+        const fakeResponse   = fakeAddressEntity.singleLineAddress;
 
         // Assertions
         expect(fakeAddressEntity).
@@ -70,7 +70,7 @@ suite(`Entity :: Address`, () => {
 
         // Interrogate
         const fakeSerialized = fakeAddressEntity.toJSON();
-        const fakeResponse   = fakeAddressEntity.singleLineFormat;
+        const fakeResponse   = fakeAddressEntity.singleLineAddress;
 
         // Assertions
         expect(fakeAddressEntity).

@@ -43,7 +43,7 @@ const
       /**
        * @returns {String} - A single line formatted address.
        */
-      get singleLineFormat () {
+      get singleLineAddress () {
         return `${this.streetNumber} ${this.streetName}, ${this.city}, ${this.state} ${this.zipCode}`;
       }
     },
