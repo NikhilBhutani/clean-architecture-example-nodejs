@@ -41,6 +41,7 @@ const
      */
     class Address {
       /**
+       * @public
        * @returns {String} - A single line formatted address.
        */
       get singleLineAddress () {

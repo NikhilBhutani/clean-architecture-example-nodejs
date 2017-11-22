@@ -19,6 +19,10 @@ const
       required: true,
     },
   })(
+    /**
+     * @member {Number} longitude
+     * @member {Number} latitude
+     */
     class Coordinates {
     },
   );

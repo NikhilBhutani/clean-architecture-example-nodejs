@@ -1,8 +1,16 @@
+/**
+ * @module ./src/usecases/Geocoding
+ */
+
 const
+  /** @type {Address} */
   Address     = require("src/entities/Address"),
+  /** @type {Coordinates} */
   Coordinates = require("src/entities/Coordinates");
 
-
+/**
+ * @interface
+ */
 class GeocodingInterface {
   fromAddress (singleLineAddress) {
   }
@@ -13,6 +21,13 @@ class GeocodingInteractor {
     this.geoCodeFromAddress = geocoder.fromAddress;
   }
 
+  /**
+   * Obtains the GPS coordinates of a standard address.
+   *
+   * @public
+   * @param   {Object} addressData
+   * @returns {Promise.<Coordinates|Boolean>}
+   */
   async getCoordinates (addressData) {
     const addressEntity    = GeocodingInteractor.validateAddress(addressData);
     const coordinatesAttrs = await this.geoCodeFromAddress(addressEntity.singleLineAddress);
@@ -30,6 +45,14 @@ class GeocodingInteractor {
     return false;
   }
 
+  /**
+   * Validates the input address attributes.
+   *
+   * @static
+   * @public
+   * @param   {Object} addressData
+   * @returns {Address|Boolean}
+   */
   static validateAddress (addressData) {
     const addressEntity = new Address(addressData);
 
