@@ -6,30 +6,30 @@ const Code = require("code"),
       { expect }                             = Code,
       { suite, test, beforeEach, afterEach } = lab,
 
-      fakeLongLat                            = require("src/entities/LongLat");
+      fakeCoordinates                        = require("src/entities/Coordinates");
 
-suite(`Entity :: LongLat`, () => {
-  let fakeValidLongLatAttrs;
+suite(`Entity :: Coordinates`, () => {
+  let fakeValidCoordinatesAttrs;
 
   beforeEach(async () => {
-    fakeValidLongLatAttrs = {
+    fakeValidCoordinatesAttrs = {
       longitude: 42,
     };
   });
 
   afterEach(async () => {
-    fakeValidLongLatAttrs = {};
+    fakeValidCoordinatesAttrs = {};
   });
 
   suite(`class`, () => {
     test(`should be defined when instantiated with an empty Object`, async () => {
       // Conditions
-      const fakeLongLatEntity = new fakeLongLat({});
+      const fakeCoordinatesEntity = new fakeCoordinates({});
 
       // Assertions
-      expect(fakeLongLatEntity).
+      expect(fakeCoordinatesEntity).
         and.not.to.be.undefined().
-        and.to.be.instanceof(fakeLongLat);
+        and.to.be.instanceof(fakeCoordinates);
     });
   });
 
@@ -39,16 +39,16 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "valid" when a positive integer value greater than zero is provided`, async () => {
         // Conditions
-        const fakeLongLatEntity = new fakeLongLat(fakeValidLongLatAttrs);
+        const fakeCoordinatesEntity = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(42);
@@ -59,17 +59,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "valid" when a negative integer value greater than zero is provided`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = -42;
-        const fakeLongLatEntity                = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = -42;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(-42);
@@ -80,17 +80,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "valid" when a positive decimal value greater than zero is provided`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = 42.42;
-        const fakeLongLatEntity                = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = 42.42;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(42.42);
@@ -101,17 +101,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "valid" when a zero value is provided`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = 0;
-        const fakeLongLatEntity                = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = 0;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(0);
@@ -122,17 +122,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "valid" when a null value is provided`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = null;
-        const fakeLongLatEntity                = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = null;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(0);
@@ -143,17 +143,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "invalid" when undefined`, async () => {
         // Conditions
-        delete fakeValidLongLatAttrs[fieldNameToTest];
-        const fakeLongLatEntity = new fakeLongLat(fakeValidLongLatAttrs);
+        delete fakeValidCoordinatesAttrs[fieldNameToTest];
+        const fakeCoordinatesEntity = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.to.be.undefined().
           and.not.to.be.a.number().
           and.not.to.equal(0);
@@ -164,17 +164,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "invalid" when a value is too large`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = 180.00001;
-        const fakeLongLatEntity = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = 180.00001;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(180.00001);
@@ -185,17 +185,17 @@ suite(`Entity :: LongLat`, () => {
 
       test(`should be "invalid" when a value is too small`, async () => {
         // Conditions
-        fakeValidLongLatAttrs[fieldNameToTest] = -180.00001;
-        const fakeLongLatEntity = new fakeLongLat(fakeValidLongLatAttrs);
+        fakeValidCoordinatesAttrs[fieldNameToTest] = -180.00001;
+        const fakeCoordinatesEntity                = new fakeCoordinates(fakeValidCoordinatesAttrs);
 
         // Interrogate a response
-        const { valid: fakeValid, errors: fakeErrors } = fakeLongLatEntity.validate();
+        const { valid: fakeValid, errors: fakeErrors } = fakeCoordinatesEntity.validate();
 
         // Assertions
-        expect(fakeLongLatEntity).
+        expect(fakeCoordinatesEntity).
           and.not.to.be.undefined().
-          and.to.be.instanceof(fakeLongLat);
-        expect(fakeLongLatEntity[fieldNameToTest]).
+          and.to.be.instanceof(fakeCoordinates);
+        expect(fakeCoordinatesEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(-180.00001);

@@ -1,11 +1,11 @@
 /**
- * @module ./src/entities/LongLat
+ * @module ./src/entities/Coordinates
  */
 
 const
   { attributes } = require("structure"),
 
-  LongLat        = attributes({
+  Coordinates    = attributes({
     longitude: {
       type:     Number,
       max:      180,
@@ -13,8 +13,8 @@ const
       required: true,
     },
   })(
-    class LongLat {
+    class Coordinates {
     },
   );
 
-module.exports = LongLat;
+module.exports = Coordinates;
