@@ -12,6 +12,12 @@ const
       min:      -180,
       required: true,
     },
+    latitude:  {
+      type:     Number,
+      max:      90,
+      min:      -90,
+      required: true,
+    },
   })(
     class Coordinates {
     },
