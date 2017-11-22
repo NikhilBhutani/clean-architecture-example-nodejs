@@ -7,6 +7,10 @@ const { attributes } = require("structure"),
           greater:  0,
           required: true,
         },
+        streetName:   {
+          type:     String,
+          required: true,
+        },
       })(
         class Address {
         },
