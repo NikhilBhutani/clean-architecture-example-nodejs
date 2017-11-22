@@ -30,6 +30,7 @@ suite(`Entity :: Address`, () => {
         streetName:   "Any Fake Street Name",
         city:         "Any Fake City Name",
         state:        "Any Fake State",
+        zipCode:      42424,
       };
     });
 
@@ -38,6 +39,8 @@ suite(`Entity :: Address`, () => {
     });
 
     suite(`streetNumber`, () => {
+      const fieldNameToTest = "streetNumber";
+
       test(`should be "valid" when a positive number value greater than zero is provided`, async () => {
         // Conditions
         const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
@@ -49,7 +52,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(42);
@@ -62,8 +65,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when a decimal number value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetNumber = 42.42;
-        const fakeAddressEntity            = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = 42.42;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -72,7 +75,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(42.42);
@@ -86,8 +89,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when a negative number value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetNumber = -42;
-        const fakeAddressEntity            = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = -42;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -96,7 +99,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(-42);
@@ -110,8 +113,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when a zero number value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetNumber = 0;
-        const fakeAddressEntity            = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = 0;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -120,7 +123,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(0);
@@ -134,8 +137,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when empty string value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetNumber = "";
-        const fakeAddressEntity            = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = "";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -144,7 +147,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.number().
           and.to.equal(0);
@@ -158,7 +161,7 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when undefined`, async () => {
         // Conditions
-        delete fakeValidAddressAttrs.streetNumber;
+        delete fakeValidAddressAttrs[fieldNameToTest];
         const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
@@ -168,7 +171,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.to.be.undefined();
         expect(fakeValid).
           and.to.be.a.boolean().
@@ -180,8 +183,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when null`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetNumber = null;
-        const fakeAddressEntity            = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = null;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -190,7 +193,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetNumber).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.to.be.number().
           and.to.equal(0);
         expect(fakeValid).
@@ -203,10 +206,12 @@ suite(`Entity :: Address`, () => {
     });
 
     suite(`streetName`, () => {
+      const fieldNameToTest = "streetName";
+
       test(`should be "valid" when a non-empty string value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetName = "Any Fake Street Name";
-        const fakeAddressEntity          = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = "Any Fake Street Name";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -215,7 +220,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetName).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.equal("Any Fake Street Name");
@@ -228,8 +233,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when an empty string value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetName = "";
-        const fakeAddressEntity          = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = "";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -238,7 +243,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetName).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.be.empty();
@@ -252,7 +257,7 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when undefined provided`, async () => {
         // Conditions
-        delete fakeValidAddressAttrs.streetName;
+        delete fakeValidAddressAttrs[fieldNameToTest];
         const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
@@ -262,7 +267,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetName).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.to.be.undefined();
         expect(fakeValid).
           and.to.be.a.boolean().
@@ -274,8 +279,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when null provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.streetName = null;
-        const fakeAddressEntity          = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = null;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -284,7 +289,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.streetName).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.empty();
         expect(fakeValid).
@@ -297,14 +302,12 @@ suite(`Entity :: Address`, () => {
     });
 
     suite(`city`, () => {
+      const fieldNameToTest = "city";
+
       test(`should be "valid" when a non-empty string value is provided`, async () => {
         // Conditions
-        const fakeAddressEntity = new fakeAddress({
-          streetNumber: 42,
-          streetName:   "Any Fake Street Name",
-          city:         "Any Fake City Name",
-          state:        "Any Fake State Name",
-        });
+        fakeValidAddressAttrs[fieldNameToTest] = "Any Fake City Name";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -313,7 +316,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.city).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.equal("Any Fake City Name");
@@ -326,11 +329,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when an empty string value is provided`, async () => {
         // Conditions
-        const fakeAddressEntity = new fakeAddress({
-          streetNumber: 42,
-          streetName:   "Any Fake Street Name",
-          city:         "",
-        });
+        fakeValidAddressAttrs[fieldNameToTest] = "";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -339,7 +339,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.city).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.be.empty();
@@ -353,10 +353,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when undefined provided`, async () => {
         // Conditions
-        const fakeAddressEntity = new fakeAddress({
-          streetNumber: 42,
-          streetName:   "Any Fake Street Name",
-        });
+        delete fakeValidAddressAttrs[fieldNameToTest];
+        const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -365,7 +363,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.city).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.to.be.undefined();
         expect(fakeValid).
           and.to.be.a.boolean().
@@ -377,11 +375,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when null provided`, async () => {
         // Conditions
-        const fakeAddressEntity = new fakeAddress({
-          streetNumber: 42,
-          streetName:   "Any Fake Street Name",
-          city:         null,
-        });
+        fakeValidAddressAttrs[fieldNameToTest] = null;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -390,7 +385,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.city).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.empty();
         expect(fakeValid).
@@ -403,10 +398,12 @@ suite(`Entity :: Address`, () => {
     });
 
     suite(`state`, () => {
+      const fieldNameToTest = "state";
+
       test(`should be "valid" when a non-empty string value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.state = "Any Fake State Name";
-        const fakeAddressEntity     = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = "Any Fake State Name";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -415,7 +412,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.state).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.equal("Any Fake State Name");
@@ -428,8 +425,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when an empty string value is provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.state = "";
-        const fakeAddressEntity     = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = "";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -438,7 +435,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.state).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.a.string().
           and.to.be.empty();
@@ -452,7 +449,7 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when undefined provided`, async () => {
         // Conditions
-        delete fakeValidAddressAttrs.state;
+        delete fakeValidAddressAttrs[fieldNameToTest];
         const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
@@ -462,7 +459,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.state).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.to.be.undefined();
         expect(fakeValid).
           and.to.be.a.boolean().
@@ -474,8 +471,8 @@ suite(`Entity :: Address`, () => {
 
       test(`should be "invalid" when null provided`, async () => {
         // Conditions
-        fakeValidAddressAttrs.state = null;
-        const fakeAddressEntity     = new fakeAddress(fakeValidAddressAttrs);
+        fakeValidAddressAttrs[fieldNameToTest] = null;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
 
         // Interrogate a response
         const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
@@ -484,7 +481,7 @@ suite(`Entity :: Address`, () => {
         expect(fakeAddressEntity).
           and.not.to.be.undefined().
           and.to.be.instanceof(fakeAddress);
-        expect(fakeAddressEntity.state).
+        expect(fakeAddressEntity[fieldNameToTest]).
           and.not.to.be.undefined().
           and.to.be.empty();
         expect(fakeValid).
@@ -493,6 +490,171 @@ suite(`Entity :: Address`, () => {
         expect(fakeErrors).
           and.not.to.be.empty().
           and.to.be.an.array();
+      });
+    });
+
+    suite(`zipCode`, () => {
+      const fieldNameToTest = "zipCode";
+
+      test(`should be "valid" when a positive number value greater than zero is provided`, async () => {
+        // Conditions
+        const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(42424);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.true();
+        expect(fakeErrors).
+          and.to.be.undefined();
+      });
+
+      test(`should be "invalid" when a decimal number value is provided`, async () => {
+        // Conditions
+        fakeValidAddressAttrs[fieldNameToTest] = 42.42;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(42.42);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.false();
+        expect(fakeErrors).
+          and.not.to.be.empty().
+          and.to.be.an.array();
+      });
+
+      test(`should be "invalid" when a negative number value is provided`, async () => {
+        // Conditions
+        fakeValidAddressAttrs[fieldNameToTest] = -42;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(-42);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.false();
+        expect(fakeErrors).
+          and.not.to.be.empty().
+          and.to.be.an.array();
+      });
+
+      test(`should be "valid" when a zero number value is provided`, async () => {
+        // Conditions
+        fakeValidAddressAttrs[fieldNameToTest] = 0;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.true();
+        expect(fakeErrors).
+          and.to.be.undefined();
+      });
+
+      test(`should be "valid" with a value of zero when empty string value is provided`, async () => {
+        // Conditions
+        fakeValidAddressAttrs[fieldNameToTest] = "";
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.true();
+        expect(fakeErrors).
+          and.to.be.undefined();
+      });
+
+      test(`should be "invalid" when undefined`, async () => {
+        // Conditions
+        delete fakeValidAddressAttrs[fieldNameToTest];
+        const fakeAddressEntity = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.to.be.undefined();
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.false();
+        expect(fakeErrors).
+          and.not.to.be.empty().
+          and.to.be.an.array();
+      });
+
+      test(`should be "valid" with a value of zero when null provided`, async () => {
+        // Conditions
+        fakeValidAddressAttrs[fieldNameToTest] = null;
+        const fakeAddressEntity                = new fakeAddress(fakeValidAddressAttrs);
+
+        // Interrogate a response
+        const { valid: fakeValid, errors: fakeErrors } = fakeAddressEntity.validate();
+
+        // Assertions
+        expect(fakeAddressEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeAddress);
+        expect(fakeAddressEntity[fieldNameToTest]).
+          and.not.to.be.undefined().
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeValid).
+          and.to.be.a.boolean().
+          and.to.be.true();
+        expect(fakeErrors).
+          and.to.be.undefined();
       });
     });
   });

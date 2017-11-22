@@ -19,6 +19,13 @@ const { attributes } = require("structure"),
           type:     String,
           required: true,
         },
+        zipCode:      {
+          type:     Number,
+          integer:  true,
+          min:      0,
+          max:      99999,
+          required: true,
+        },
       })(
         class Address {
         },
