@@ -23,7 +23,7 @@ suite(`Entity :: History`, () => {
       address:           "Any Fake Street Address",
       longitude:         42,
       latitude:          42,
-      originalMoment:    1511194690, //Monday, November 20, 2017 8:18:10 AM GMT-08:00
+      originalMoment:    1511194690, //Monday, November 20, 2017 5:18:10 AM GMT-05:00
       timezone:          "America/New_York",
       observationPoints: [
         fakeValidWeatherAttrs,
@@ -45,6 +45,115 @@ suite(`Entity :: History`, () => {
       expect(fakeHistoryEntity).
         and.not.to.be.undefined().
         and.to.be.instanceof(fakeHistory);
+    });
+  });
+
+  suite(`method`, () => {
+    suite(`getDailyStartOfDay()`, () => {
+      test(`should be defined`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeHistoryEntity.getDailyStartOfDay).
+          and.to.be.a.function();
+      });
+
+      test(`should return an empty array if zero is used`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay(0);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.be.empty();
+      });
+
+      test(`should return an empty array if null`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay(null);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.be.empty();
+      });
+
+      test(`should return an empty array if undefined`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay();
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.be.empty();
+      });
+
+      test(`should return a single unix timestamp when -1 is used`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay(-1);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.have.length(1);
+        expect((fakeResponse[0])).
+          and.to.be.a.date().
+          and.to.equal(new Date("2017-11-19T05:00:00.000Z"));
+      });
+
+      test(`should return a double unix timestamp when -2 is used`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay(-2);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.have.length(2);
+        expect((fakeResponse[0])).
+          and.to.be.a.date().
+          and.to.equal(new Date("2017-11-19T05:00:00.000Z"));
+        expect((fakeResponse[1])).
+          and.to.be.a.date().
+          and.to.equal(new Date("2017-11-18T05:00:00.000Z"));
+      });
+
+      test(`should return an empty array when a postive integer is used`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.getDailyStartOfDay(2);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.an.array().
+          and.to.be.empty();
+      });
     });
   });
 

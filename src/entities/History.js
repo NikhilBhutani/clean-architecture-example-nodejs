@@ -3,6 +3,9 @@
  */
 
 const
+  _              = require("lodash"),
+  moment         = require("moment-timezone"),
+
   Weather        = require("./Weather"),
 
   { attributes } = require("structure"),
@@ -55,6 +58,26 @@ const
      * @member {Array.<Weather>} observationPoints
      */
     class History {
+      /**
+       * Generates an array of timestamps representing the last "x" days.
+       *
+       * @public
+       * @param {Number} daysRelativeToToday
+       * @returns {Array.<Date>}
+       */
+      getDailyStartOfDay (daysRelativeToToday) {
+        const retVal            = [];
+        const aMoment           = moment.tz(this.originalMoment * 1000, this.timezone);
+        const dayStartOfAMoment = aMoment.startOf("day");
+
+        if (_.isNumber(daysRelativeToToday) && daysRelativeToToday <= -1) {
+          for (let dx = 0; dx > daysRelativeToToday; dx--) {
+            const dayStartOneDayEarlier = dayStartOfAMoment.subtract({ days: 1 });
+            retVal.push(dayStartOneDayEarlier.toDate());
+          }
+        }
+        return retVal;
+      }
     },
   );
 
