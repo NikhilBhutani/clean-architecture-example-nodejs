@@ -14,6 +14,8 @@ const Code = require("code"),
       }                                      = require("src/usecases/AddressWeatherHistory");
 
 suite(`Usecase :: AddressWeatherHistory`, () => {
+  const _isErrorFree = Symbol.for("_isErrorFree");
+
   const fakeValidAddressAttrs = {
     streetNumber: 42,
     streetName:   "Any Fake Street Name",
@@ -246,6 +248,39 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         expect(fakeResponse).
           and.not.to.be.undefined().
           and.to.equal("fakeValue");
+      });
+    });
+  });
+
+  suite(`private member`, () => {
+    suite(`isErrorFree`, () => {
+      test(`should return the correct initial value of an instance`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        const fakeResponse                        = fakeAddressWeatherHistoryInteractor[Symbol.for("_isErrorFree")];
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeResponse).
+          and.to.be.boolean().
+          and.to.be.true();
+      });
+
+      test(`should retain the correct value when assigning a new value`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor         = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        fakeAddressWeatherHistoryInteractor[_isErrorFree] = false;
+        const fakeResponse                                = fakeAddressWeatherHistoryInteractor[Symbol.for("_isErrorFree")];
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeResponse).
+          and.to.be.boolean().
+          and.to.be.false();
       });
     });
   });
