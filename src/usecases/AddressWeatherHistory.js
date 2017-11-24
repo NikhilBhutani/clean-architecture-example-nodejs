@@ -22,6 +22,9 @@ class AddressGeocoderInterface {
 class AddressWeatherHistoryInteractor {
   constructor ({ geocoderGateway }) {
     this.geoCodeFromAddress = geocoderGateway.fromAddress;
+
+    // Init privates
+    this[Symbol.for("_isErrorFree")] = true;
   }
 
   /**
@@ -112,6 +115,27 @@ class AddressWeatherHistoryInteractor {
       privateMap.set(ctx, new Map());
     }
     privateMap.get(ctx).set(Symbol.for(`${privateVar}Private`), value);
+  }
+
+  /**
+   * Has an error occurred?
+   *
+   * @private
+   * @readonly
+   * @returns {Boolean}
+   */
+  get [Symbol.for("_isErrorFree")] () {
+    return AddressWeatherHistoryInteractor.getPrivate("isErrorFree", this);
+  }
+
+  /**
+   * Assign a value when an error has occurred.
+   *
+   * @private
+   * @param {Boolean} value
+   */
+  set [Symbol.for("_isErrorFree")] (value) {
+    AddressWeatherHistoryInteractor.setPrivate("isErrorFree", value, this);
   }
 }
 
