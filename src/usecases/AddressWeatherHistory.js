@@ -3,13 +3,17 @@
  */
 
 const
+  moment      = require("moment-timezone"),
+
   // Private Map of Members
   privateMap  = new Map(),
 
   /** @type {Address} */
   Address     = require("src/entities/Address"),
   /** @type {Coordinates} */
-  Coordinates = require("src/entities/Coordinates");
+  Coordinates = require("src/entities/Coordinates"),
+  /** @type {History} */
+  History     = require("src/entities/History");
 
 /**
  * @interface
@@ -95,6 +99,39 @@ class AddressWeatherHistoryInteractor {
     if (isValidAddress) {
       this.addressEntity = addressEntity;
       return this[_isErrorFree];
+    }
+
+    // TODO: Add some logging
+    this[_isErrorFree] = false;
+    return this[_isErrorFree];
+  }
+
+  /**
+   * Composes a base history entity using existing address and coordinate entities.
+   *
+   * @private
+   * @returns {Boolean}
+   */
+  async [Symbol.for("_composeHistoryEntity")] () {
+    const
+      _setTimezone = Symbol.for("_setTimezone"),
+      _isErrorFree = Symbol.for("_isErrorFree");
+
+    await this[_setTimezone]();
+    if (false !== this[_isErrorFree]) {
+      const historyEntity = new History(Object.assign(
+        this.coordinatesEntity, {
+          timezone:       this.timezone,
+          address:        this.addressEntity.singleLineAddress,
+          originalMoment: moment().unix(),
+        },
+      ));
+
+      const { valid: isValidHistory, errors: validationErrors } = historyEntity.validate();
+      if (isValidHistory) {
+        this.historyEntity = historyEntity;
+        return this[_isErrorFree];
+      }
     }
 
     // TODO: Add some logging

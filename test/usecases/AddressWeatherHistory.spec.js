@@ -8,40 +8,62 @@ const Code = require("code"),
 
       FakeAddressEntity                      = require("src/entities/Address"),
       FakeCoordinatesEntity                  = require("src/entities/Coordinates"),
+      FakeHistoryEntity                      = require("src/entities/History"),
       {
         AddressGeocoderInterface:        FakeDefaultAddressGeocoderInterface,
         AddressWeatherHistoryInteractor: FakeDefaultAddressWeatherHistoryInteractor,
       }                                      = require("src/usecases/AddressWeatherHistory");
 
 suite(`Usecase :: AddressWeatherHistory`, () => {
-  const _isErrorFree = Symbol.for("_isErrorFree");
+  const
+    _composeHistoryEntity = Symbol.for("_composeHistoryEntity"),
+    _isErrorFree          = Symbol.for("_isErrorFree");
 
-  const fakeValidAddressAttrs = {
-    streetNumber: 42,
-    streetName:   "Any Fake Street Name",
-    city:         "Any Fake City Name",
-    state:        "Any Fake State",
-    zipCode:      42424,
-  };
+  let fakeValidAddressAttrs;
+  let fakeValidCoordinatesAttrs;
+  let fakeGeocoderGateway;
+  let fakeTimezoneGateway;
+  let fakeConstructorParams;
 
-  const fakeValidCoordinatesAttrs = {
-    longitude: 42,
-    latitude:  42,
-  };
+  beforeEach(async () => {
+    fakeValidAddressAttrs = {
+      streetNumber: 42,
+      streetName:   "Any Fake Street Name",
+      city:         "Any Fake City Name",
+      state:        "Any Fake State",
+      zipCode:      42424,
+    };
 
-  const fakeConstructorParams = {
-    geocoderGateway: {
+    fakeValidCoordinatesAttrs = {
+      longitude: 42,
+      latitude:  42,
+    };
+
+    fakeGeocoderGateway = {
       fromAddress: async function fakeFromAddress (singleLineAddress) {
         return fakeValidCoordinatesAttrs;
       },
-    },
+    };
 
-    timezoneGateway: {
+    fakeTimezoneGateway = {
       fromCoordinates: async function fakeFromCoordinates () {
         return { timezone: "America/New_York" };
       },
-    },
-  };
+    };
+
+    fakeConstructorParams = {
+      geocoderGateway: fakeGeocoderGateway,
+      timezoneGateway: fakeTimezoneGateway,
+    };
+  });
+
+  afterEach(async () => {
+    fakeValidAddressAttrs     = {};
+    fakeValidCoordinatesAttrs = {};
+    fakeGeocoderGateway       = {};
+    fakeTimezoneGateway       = {};
+    fakeConstructorParams     = {};
+  });
 
   suite(`interface`, () => {
     suite(`AddressGeocoderInterface`, () => {
@@ -130,20 +152,8 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
 
       test(`should NOT return "coordinates" when coordinates are "invalid"`, async () => {
         // Conditions
-        const fakeConstructor                     = {
-          geocoderGateway: {
-            fromAddress: async function fakeFromAddress (singleLineAddress) {
-              return {};
-            },
-          },
-
-          timezoneGateway: {
-            fromCoordinates: async function fakeFromCoordinates () {
-              return { timezone: "America/New_York" };
-            },
-          },
-        };
-        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructor);
+        fakeValidCoordinatesAttrs                 = {};
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
         const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.getCoordinates(fakeValidAddressAttrs);
 
         // Assertions
@@ -250,7 +260,91 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
   });
 
   suite(`private member`, () => {
-    suite(`isErrorFree`, () => {
+    suite(`_composeHistoryEntity`, () => {
+      test(`should be defined`, () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+          and.not.to.be.undefined();
+      });
+
+      test(`should NOT compose when there were previous errors`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor             = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
+        fakeAddressWeatherHistoryInteractor.historyEntity     = "fake before value 3";
+        fakeAddressWeatherHistoryInteractor[_isErrorFree]     = false;
+        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeAddressWeatherHistoryInteractor.historyEntity).
+          and.not.to.be.instanceof(FakeHistoryEntity).
+          and.to.equal("fake before value 3");
+        expect(fakeResponse).
+          and.to.be.a.boolean().
+          and.to.be.false();
+      });
+
+      test(`should NOT compose when the history entity is invalid`, async () => {
+        // Conditions
+        delete fakeValidCoordinatesAttrs.latitude;
+        const fakeAddressWeatherHistoryInteractor             = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        fakeAddressWeatherHistoryInteractor.addressEntity     = new FakeAddressEntity(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
+        fakeAddressWeatherHistoryInteractor.historyEntity     = "fake before value 3";
+        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeAddressWeatherHistoryInteractor.historyEntity).
+          and.not.to.be.instanceof(FakeHistoryEntity).
+          and.to.equal("fake before value 3");
+        expect(fakeResponse).
+          and.to.be.a.boolean().
+          and.to.be.false();
+      });
+
+      test(`should compose when there were no previous errors`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor             = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        fakeAddressWeatherHistoryInteractor.addressEntity     = new FakeAddressEntity(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
+        fakeAddressWeatherHistoryInteractor.historyEntity     = "fake before value 3";
+        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeAddressWeatherHistoryInteractor.historyEntity).
+          and.to.be.instanceof(FakeHistoryEntity).
+          and.not.to.equal("fake before value 3");
+        expect(fakeResponse).
+          and.to.be.a.boolean().
+          and.to.be.true();
+      });
+    });
+
+    suite(`_isErrorFree`, () => {
       test(`should return the correct initial value of an instance`, async () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
