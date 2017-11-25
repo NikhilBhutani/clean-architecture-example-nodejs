@@ -11,6 +11,7 @@ const Code = require("code"),
       FakeHistoryEntity                      = require("src/entities/History"),
       {
         AddressGeocoderInterface:        FakeDefaultAddressGeocoderInterface,
+        WeatherGatewayInterface:         FakeDefaultWeatherGatewayInterface,
         AddressWeatherHistoryInteractor: FakeDefaultAddressWeatherHistoryInteractor,
       }                                      = require("src/usecases/AddressWeatherHistory");
 
@@ -23,6 +24,9 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
   let fakeValidCoordinatesAttrs;
   let fakeGeocoderGateway;
   let fakeTimezoneGateway;
+  let fakeTimeZoneData;
+  let fakeHistoricWeatherData;
+  let fakeWeatherGateway;
   let fakeConstructorParams;
 
   beforeEach(async () => {
@@ -39,6 +43,16 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       latitude:  42,
     };
 
+    fakeTimeZoneData = {
+      timezone: "America/Los_Angeles",
+    };
+
+    fakeHistoricWeatherData = {
+      dateTime:         new Date(),
+      daytimeHighTemp:  44.01,
+      overnightLowTemp: -44.01,
+    };
+
     fakeGeocoderGateway = {
       fromAddress: async function fakeFromAddress (singleLineAddress) {
         return fakeValidCoordinatesAttrs;
@@ -51,9 +65,16 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       },
     };
 
+    fakeWeatherGateway = {
+      getHistoricInfo: async function fakeGetHistoricInfo ({ latitude, longitude, dateTime }) {
+        return fakeHistoricWeatherData;
+      },
+    };
+
     fakeConstructorParams = {
       geocoderGateway: fakeGeocoderGateway,
       timezoneGateway: fakeTimezoneGateway,
+      weatherGateway:  fakeWeatherGateway,
     };
   });
 
@@ -62,6 +83,9 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
     fakeValidCoordinatesAttrs = {};
     fakeGeocoderGateway       = {};
     fakeTimezoneGateway       = {};
+    fakeTimeZoneData          = {};
+    fakeHistoricWeatherData   = {};
+    fakeWeatherGateway        = {};
     fakeConstructorParams     = {};
   });
 
@@ -79,6 +103,24 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
 
         // Assertions
         expect(fakeAddressGeocoderInterface.fromAddress).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+    });
+
+    suite(`WeatherGatewayInterface`, () => {
+      test(`should have a defined interface to be implemented`, async () => {
+        // Assertions
+        expect(FakeDefaultWeatherGatewayInterface).
+          and.not.to.be.undefined();
+      });
+
+      test(`should have the "getHistoricInfo()" method defined`, async () => {
+        // Conditions
+        const fakeWeatherGatewayInterface = new FakeDefaultWeatherGatewayInterface();
+
+        // Assertions
+        expect(fakeWeatherGatewayInterface.getHistoricInfo).
           and.not.to.be.undefined().
           and.to.be.a.function();
       });
@@ -108,6 +150,21 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           and.not.to.be.undefined().
           and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
         expect(fakeAddressWeatherHistoryInteractor.geoCodeFromAddress).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+    });
+
+    suite(`getWeatherInfo()`, () => {
+      test(`should be defined as a function when all injected dependencies`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor.getWeatherInfo).
           and.not.to.be.undefined().
           and.to.be.a.function();
       });
