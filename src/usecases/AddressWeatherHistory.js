@@ -149,6 +149,31 @@ class AddressWeatherHistoryInteractor {
   }
 
   /**
+   * Assembles daily weather info in history data structure.
+   *
+   * @returns {Promise.<{Boolean}>}
+   */
+  async [Symbol.for("_assembleHistoricInfo")] () {
+    const
+      _isErrorFree            = Symbol.for("_isErrorFree"),
+      pastWeekDailyTimestamps = this.historyEntity.getDailyStartOfDay(-7);
+
+    if (false !== this[_isErrorFree]) {
+      for (let dx = 0; dx < pastWeekDailyTimestamps.length; dx++) {
+        const weatherInfo = await this.getWeatherInfo(Object.assign(
+          this.coordinatesEntity.toJSON(), {
+            dateTime: pastWeekDailyTimestamps[dx],
+          },
+        ));
+        this.historyEntity.addObservationPoints([weatherInfo]);
+      }
+    }
+
+    // TODO: Add some logging
+    return this[_isErrorFree];
+  }
+
+  /**
    * A helper that retrieves the value for a privately stored property.
    *
    * @static
