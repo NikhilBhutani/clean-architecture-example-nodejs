@@ -78,6 +78,30 @@ const
         }
         return retVal;
       }
+
+      /**
+       * Adds valid weather observation data points to the struct.
+       *
+       * @param   {Array.<Weather>} weatherDataPoints
+       * @returns {Number} - The number of successfully added weather data points.
+       */
+      addObservationPoints (weatherDataPoints) {
+        let observationPointsSuccesfullyAdded = 0;
+
+        if (_.isArray(weatherDataPoints)) {
+          for (let dx = 0; dx < weatherDataPoints.length; dx++) {
+            const observationDataPointEntity = new Weather(weatherDataPoints[dx]);
+
+            const { valid: isValid, errors } = observationDataPointEntity.validate();
+            if (isValid) {
+              this.observationPoints.push(observationDataPointEntity);
+              observationPointsSuccesfullyAdded++;
+            }
+          }
+        }
+
+        return observationPointsSuccesfullyAdded;
+      }
     },
   );
 

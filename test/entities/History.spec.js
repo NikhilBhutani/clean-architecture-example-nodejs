@@ -6,11 +6,13 @@ const Code = require("code"),
       { expect }                             = Code,
       { suite, test, beforeEach, afterEach } = lab,
 
-      fakeHistory                            = require("src/entities/History");
+      fakeHistory                            = require("src/entities/History"),
+      fakeWeatherEntity                      = require("src/entities/Weather");
 
 suite(`Entity :: History`, () => {
   let fakeValidHistoryAttrs;
   let fakeValidWeatherAttrs;
+  let fakeMixedWeatherAttrs = [];
 
   beforeEach(async () => {
     fakeValidWeatherAttrs = {
@@ -29,11 +31,28 @@ suite(`Entity :: History`, () => {
         fakeValidWeatherAttrs,
       ],
     };
+
+    fakeMixedWeatherAttrs = [
+      {
+        dateTime:         4242,
+        daytimeHighTemp:  44.01,
+        overnightLowTemp: -44.01,
+      }, {
+        dateTime:         4243,
+        daytimeHighTemp:  "forced invalid",
+        overnightLowTemp: -44.02,
+      }, {
+        dateTime:         4244,
+        daytimeHighTemp:  44.03,
+        overnightLowTemp: -44.03,
+      },
+    ];
   });
 
   afterEach(async () => {
     fakeValidHistoryAttrs = {};
     fakeValidWeatherAttrs = {};
+    fakeMixedWeatherAttrs = [];
   });
 
   suite(`class`, () => {
@@ -153,6 +172,115 @@ suite(`Entity :: History`, () => {
         expect(fakeResponse).
           and.to.be.an.array().
           and.to.be.empty();
+      });
+    });
+
+    suite(`addObservationPoints()`, () => {
+      test(`should be defined`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeHistoryEntity.addObservationPoints).
+          and.to.be.a.function();
+      });
+
+      test(`should not add an undefined weather data point`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.addObservationPoints();
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeHistoryEntity.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(1);
+        expect(fakeHistoryEntity.observationPoints[0]).
+          and.to.be.an.instanceof(fakeWeatherEntity);
+      });
+
+      test(`should not add a null weather data point`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.addObservationPoints(null);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeHistoryEntity.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(1);
+        expect(fakeHistoryEntity.observationPoints[0]).
+          and.to.be.an.instanceof(fakeWeatherEntity);
+      });
+
+      test(`should not add an invalid weather data point`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.addObservationPoints([fakeMixedWeatherAttrs[1]]);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.a.number().
+          and.to.equal(0);
+        expect(fakeHistoryEntity.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(1);
+        expect(fakeHistoryEntity.observationPoints[0]).
+          and.to.be.an.instanceof(fakeWeatherEntity);
+      });
+
+      test(`should add just one when weather data point is valid`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.addObservationPoints([fakeMixedWeatherAttrs[2]]);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.a.number().
+          and.to.equal(1);
+        expect(fakeHistoryEntity.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(2);
+        expect(fakeHistoryEntity.observationPoints[1]).
+          and.to.be.an.instanceof(fakeWeatherEntity);
+      });
+
+      test(`should add just two when weather data points are mixed`, async () => {
+        // Conditions
+        const fakeHistoryEntity = new fakeHistory(fakeValidHistoryAttrs);
+        const fakeResponse      = fakeHistoryEntity.addObservationPoints(fakeMixedWeatherAttrs);
+
+        // Assertions
+        expect(fakeHistoryEntity).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(fakeHistory);
+        expect(fakeResponse).
+          and.to.be.a.number().
+          and.to.equal(2);
+        expect(fakeHistoryEntity.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(3);
+        expect(fakeHistoryEntity.observationPoints[1]).
+          and.to.be.an.instanceof(fakeWeatherEntity);
       });
     });
   });
