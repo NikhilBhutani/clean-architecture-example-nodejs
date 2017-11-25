@@ -31,10 +31,19 @@ class TimezoneGatewayInterface {
   }
 }
 
+/**
+ * @interface
+ */
+class WeatherGatewayInterface {
+  async getHistoricInfo ({ latitude: latitudeParam, longitude: longitudeParam, dateTime: dateTimeParam }) {
+  }
+}
+
 class AddressWeatherHistoryInteractor {
-  constructor ({ geocoderGateway, timezoneGateway }) {
+  constructor ({ geocoderGateway, timezoneGateway, weatherGateway }) {
     this.geocoderGateway = geocoderGateway;
     this.timezoneGateway = timezoneGateway;
+    this.weatherGateway  = weatherGateway;
 
     // Init privates
     this[Symbol.for("_isErrorFree")] = true;
@@ -206,5 +215,7 @@ class AddressWeatherHistoryInteractor {
 
 module.exports = {
   AddressGeocoderInterface,
+  TimezoneGatewayInterface,
+  WeatherGatewayInterface,
   AddressWeatherHistoryInteractor,
 };
