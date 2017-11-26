@@ -43,6 +43,11 @@ class WeatherGatewayInterface {
   }
 }
 
+class WeatherHistoryPresenterInterface {
+  toOutputPort ({ observationPoints, isErrorFree }) {
+  }
+}
+
 class AddressWeatherHistoryInteractor extends Operation {
   constructor ({ geocoderGateway, timezoneGateway, weatherGateway }) {
     super();
@@ -80,6 +85,7 @@ class AddressWeatherHistoryInteractor extends Operation {
       await this[_assembleHistoricInfo]();
     } catch (error) {
       this[_isErrorFree] = false;
+      // This return structure depends on the WeatherHistoryPresenterInterface defined in this module.
       return this.emit(ERROR, {
         errorDetails: error,
         isErrorFree:  this[_isErrorFree],
@@ -87,6 +93,7 @@ class AddressWeatherHistoryInteractor extends Operation {
     }
 
     const observationPoints = _.get(this.historyEntity.toJSON(), "observationPoints", []);
+    // This return structure depends on the WeatherHistoryPresenterInterface defined in this module.
     return this.emit(SUCCESS, {
       observationPoints: observationPoints,
       isErrorFree:       this[_isErrorFree],
@@ -291,5 +298,6 @@ module.exports = {
   AddressGeocoderInterface,
   TimezoneGatewayInterface,
   WeatherGatewayInterface,
+  WeatherHistoryPresenterInterface,
   AddressWeatherHistoryInteractor,
 };
