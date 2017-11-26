@@ -198,21 +198,25 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       test(`should always return a valid object when using valid parameters`, async () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.DAILY_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeResponse).
-          and.to.contain([
-            "observationPoints",
-            "isErrorFree",
-          ],
-        );
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeResponse).
+            and.to.contain([
+              "observationPoints",
+              "isErrorFree",
+            ],
+          );
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
       });
 
       test(`should return empty data when there are errors`, async () => {
@@ -221,42 +225,50 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         fakeAddressWeatherHistoryInteractor[_isErrorFree]     = false;
         fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
         fakeAddressWeatherHistoryInteractor.historyEntity     = new FakeHistoryEntity(fakeValidHistoryAttrs);
-        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.DAILY_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeResponse).
-          and.to.contain("observationPoints");
-        expect(fakeResponse.observationPoints).
-          and.to.be.an.array();
-        expect(fakeResponse.isErrorFree).
-          and.to.be.a.boolean().
-          and.to.be.false();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeResponse).
+            and.to.contain("observationPoints");
+          expect(fakeResponse.observationPoints).
+            and.to.be.an.array();
+          expect(fakeResponse.isErrorFree).
+            and.to.be.a.boolean().
+            and.to.be.false();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
       });
 
       test(`should return valid data when there are NO errors`, async () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.DAILY_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeResponse.observationPoints).
-          and.to.be.an.array().
-          and.to.have.length(7);
-        expect(fakeResponse.isErrorFree).
-          and.to.be.a.boolean().
-          and.to.be.true();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeResponse.observationPoints).
+            and.to.be.an.array().
+            and.to.have.length(7);
+          expect(fakeResponse.isErrorFree).
+            and.to.be.a.boolean().
+            and.to.be.true();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
       });
     });
 
@@ -277,39 +289,47 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       test(`should NOT return "false" when input addressData is valid`, async () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.getCoordinates(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.COORDINATES_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor.getCoordinates).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeResponse).
-          and.not.to.be.a.boolean().
-          and.not.to.be.false();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor.getCoordinates).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeResponse).
+            and.not.to.be.a.boolean().
+            and.not.to.be.false();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor.getCoordinates(fakeValidAddressAttrs);
       });
 
       test(`should return "coordinates" when input addressData is valid`, async () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.getCoordinates(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.COORDINATES_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor.getCoordinates).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeResponse).
-          and.to.be.an.object().
-          and.to.contain([
-            "longitude",
-            "latitude",
-          ],
-        );
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor.getCoordinates).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeResponse).
+            and.to.be.an.object().
+            and.to.contain([
+              "longitude",
+              "latitude",
+            ],
+          );
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor.getCoordinates(fakeValidAddressAttrs);
       });
 
       test(`should NOT return "coordinates" when coordinates are "invalid"`, async () => {
@@ -361,15 +381,21 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       test(`should assign a valid addressEntity to a member property when addressData argument is valid`, () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = fakeAddressWeatherHistoryInteractor.validateAddress(fakeValidAddressAttrs);
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.VALIDATION_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeResponse).
-          and.to.be.a.boolean().
-          and.not.to.be.false();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeResponse).
+            and.to.be.a.boolean().
+            and.to.be.true();
+          expect(fakeAddressWeatherHistoryInteractor.addressEntity).
+            and.to.be.an.instanceof(FakeAddressEntity);
+        });
+
+        // Execution
+        const ignoredResponse = fakeAddressWeatherHistoryInteractor.validateAddress(fakeValidAddressAttrs);
       });
     });
 
@@ -465,21 +491,25 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         fakeAddressWeatherHistoryInteractor.addressEntity     = new FakeAddressEntity(fakeValidAddressAttrs);
         fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
         fakeAddressWeatherHistoryInteractor.historyEntity     = new FakeHistoryEntity(fakeValidHistoryAttrs);
-        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_assembleHistoricInfo]();
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.ASSEMBLE_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor[_assembleHistoricInfo]).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeAddressWeatherHistoryInteractor.historyEntity.observationPoints).
-          and.to.be.an.array().
-          and.to.have.length(8);
-        expect(fakeResponse).
-          and.to.be.a.boolean().
-          and.to.be.true();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor[_assembleHistoricInfo]).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeAddressWeatherHistoryInteractor.historyEntity.observationPoints).
+            and.to.be.an.array().
+            and.to.have.length(8);
+          expect(fakeResponse).
+            and.to.be.a.boolean().
+            and.to.be.true();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor[_assembleHistoricInfo]();
       });
     });
 
@@ -526,20 +556,24 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         fakeAddressWeatherHistoryInteractor.addressEntity     = new FakeAddressEntity(fakeValidAddressAttrs);
         fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
         fakeAddressWeatherHistoryInteractor.historyEntity     = "fake before value 3";
-        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.COMPOSE_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeAddressWeatherHistoryInteractor.historyEntity).
-          and.not.to.be.instanceof(FakeHistoryEntity).
-          and.to.equal("fake before value 3");
-        expect(fakeResponse).
-          and.to.be.an.array();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeAddressWeatherHistoryInteractor.historyEntity).
+            and.not.to.be.instanceof(FakeHistoryEntity).
+            and.to.equal("fake before value 3");
+          expect(fakeResponse).
+            and.to.be.an.array();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
       });
 
       test(`should compose when there were no previous errors`, async () => {
@@ -548,21 +582,25 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         fakeAddressWeatherHistoryInteractor.addressEntity     = new FakeAddressEntity(fakeValidAddressAttrs);
         fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
         fakeAddressWeatherHistoryInteractor.historyEntity     = "fake before value 3";
-        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
+        fakeAddressWeatherHistoryInteractor.on(fakeAddressWeatherHistoryInteractor.outputs.COMPOSE_SUCCESS, fakeResponse => {
 
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
-          and.not.to.be.undefined().
-          and.to.be.a.function();
-        expect(fakeAddressWeatherHistoryInteractor.historyEntity).
-          and.to.be.instanceof(FakeHistoryEntity).
-          and.not.to.equal("fake before value 3");
-        expect(fakeResponse).
-          and.to.be.a.boolean().
-          and.to.be.true();
+          // Assertions
+          expect(fakeAddressWeatherHistoryInteractor).
+            and.not.to.be.undefined().
+            and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+          expect(fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]).
+            and.not.to.be.undefined().
+            and.to.be.a.function();
+          expect(fakeAddressWeatherHistoryInteractor.historyEntity).
+            and.to.be.instanceof(FakeHistoryEntity).
+            and.not.to.equal("fake before value 3");
+          expect(fakeResponse).
+            and.to.be.a.boolean().
+            and.to.be.true();
+        });
+
+        // Execution
+        const ignoredResponse = await fakeAddressWeatherHistoryInteractor[_composeHistoryEntity]();
       });
     });
 

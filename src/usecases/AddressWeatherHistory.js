@@ -6,6 +6,9 @@ const
   _           = require("lodash"),
   moment      = require("moment-timezone"),
 
+  /** @type {Operation} */
+  Operation   = require("./Operation"),
+
   // Private Map of Members
   privateMap  = new Map(),
 
@@ -40,8 +43,10 @@ class WeatherGatewayInterface {
   }
 }
 
-class AddressWeatherHistoryInteractor {
+class AddressWeatherHistoryInteractor extends Operation {
   constructor ({ geocoderGateway, timezoneGateway, weatherGateway }) {
+    super();
+
     this.geocoderGateway = geocoderGateway;
     this.timezoneGateway = timezoneGateway;
     this.weatherGateway  = weatherGateway;
@@ -63,16 +68,26 @@ class AddressWeatherHistoryInteractor {
    */
   async composePreviousDaily ({ streetNumber, streetName, city, state, zipCode }) {
     const
-      _isErrorFree          = Symbol.for("_isErrorFree"),
-      _composeHistoryEntity = Symbol.for("_composeHistoryEntity"),
-      _assembleHistoricInfo = Symbol.for("_assembleHistoricInfo");
+      _isErrorFree             = Symbol.for("_isErrorFree"),
+      _composeHistoryEntity    = Symbol.for("_composeHistoryEntity"),
+      _assembleHistoricInfo    = Symbol.for("_assembleHistoricInfo"),
 
-    await this.getCoordinates({ streetNumber, streetName, city, state, zipCode });
-    await this[_composeHistoryEntity]();
-    await this[_assembleHistoricInfo]();
+      { DAILY_SUCCESS, ERROR } = this.outputs;
+
+    try {
+      await this.getCoordinates({ streetNumber, streetName, city, state, zipCode });
+      await this[_composeHistoryEntity]();
+      await this[_assembleHistoricInfo]();
+    } catch (error) {
+      this[_isErrorFree] = false;
+      return this.emit(ERROR, {
+        errorDetails: error,
+        isErrorFree:  this[_isErrorFree],
+      });
+    }
 
     const observationPoints = _.get(this.historyEntity.toJSON(), "observationPoints", []);
-    return Promise.resolve({
+    return this.emit(DAILY_SUCCESS, {
       observationPoints: observationPoints,
       isErrorFree:       this[_isErrorFree],
     });
@@ -91,29 +106,39 @@ class AddressWeatherHistoryInteractor {
    */
   async getCoordinates ({ streetNumber, streetName, city, state, zipCode }) {
     const
-      _isErrorFree = Symbol.for("_isErrorFree");
+      _isErrorFree                                     = Symbol.for("_isErrorFree"),
+
+      { COORDINATES_SUCCESS, VALIDATION_ERROR, ERROR } = this.outputs;
 
     this.validateAddress({ streetNumber, streetName, city, state, zipCode });
 
     if (this[_isErrorFree]) {
-      const
-        coordinatesAttrs  = await this.geocoderGateway.fromAddress(this.addressEntity.singleLineAddress),
-        coordinatesEntity = new Coordinates(coordinatesAttrs),
+      try {
+        const
+          coordinatesAttrs  = await this.geocoderGateway.fromAddress(this.addressEntity.singleLineAddress),
+          coordinatesEntity = new Coordinates(coordinatesAttrs),
 
-        {
-          valid: isValidCoordinates,
-        }                 = coordinatesEntity.validate();
-      if (isValidCoordinates) {
-        this.coordinatesEntity = coordinatesEntity;
-        return this.coordinatesEntity.toJSON();
+          {
+            valid:  isValidCoordinates,
+            errors: validationErrors,
+          }                 = coordinatesEntity.validate();
+        if (isValidCoordinates) {
+          this.coordinatesEntity = coordinatesEntity;
+          return this.emit(COORDINATES_SUCCESS, this.coordinatesEntity.toJSON());
+        }
+        // TODO: Add some logging
+        this[_isErrorFree] = false;
+        return this.emit(VALIDATION_ERROR, validationErrors);
+      } catch (error) {
+        // TODO: Add some logging
+        this[_isErrorFree] = false;
+        return this.emit(ERROR, error);
       }
-      // TODO: Add some logging
-      this[_isErrorFree] = false;
     }
 
     // TODO: Add some logging
     this[_isErrorFree] = false;
-    return this[_isErrorFree];
+    return this.emit(VALIDATION_ERROR, this[_isErrorFree]);
   }
 
   /**
@@ -129,20 +154,24 @@ class AddressWeatherHistoryInteractor {
    */
   validateAddress ({ streetNumber, streetName, city, state, zipCode }) {
     const
-      _isErrorFree  = Symbol.for("_isErrorFree"),
-      addressEntity = new Address({ streetNumber, streetName, city, state, zipCode }),
+      _isErrorFree                             = Symbol.for("_isErrorFree"),
+
+      { VALIDATION_SUCCESS, VALIDATION_ERROR } = this.outputs,
+
+      addressEntity                            = new Address({ streetNumber, streetName, city, state, zipCode }),
 
       {
-        valid: isValidAddress,
-      }             = addressEntity.validate();
+        valid:  isValidAddress,
+        errors: validationErrors,
+      }                                        = addressEntity.validate();
     if (isValidAddress) {
       this.addressEntity = addressEntity;
-      return this[_isErrorFree];
+      return this.emit(VALIDATION_SUCCESS, this[_isErrorFree]);
     }
 
     // TODO: Add some logging
     this[_isErrorFree] = false;
-    return this[_isErrorFree];
+    return this.emit(VALIDATION_ERROR, validationErrors);
   }
 
   /**
@@ -153,8 +182,10 @@ class AddressWeatherHistoryInteractor {
    */
   async [Symbol.for("_composeHistoryEntity")] () {
     const
-      _setTimezone = Symbol.for("_setTimezone"),
-      _isErrorFree = Symbol.for("_isErrorFree");
+      _setTimezone                          = Symbol.for("_setTimezone"),
+      _isErrorFree                          = Symbol.for("_isErrorFree"),
+
+      { COMPOSE_SUCCESS, VALIDATION_ERROR } = this.outputs;
 
     await this[_setTimezone]();
     if (false !== this[_isErrorFree]) {
@@ -169,15 +200,15 @@ class AddressWeatherHistoryInteractor {
       const { valid: isValidHistory, errors: validationErrors } = historyEntity.validate();
       if (isValidHistory) {
         this.historyEntity = historyEntity;
-        return this[_isErrorFree];
+        return this.emit(COMPOSE_SUCCESS, this[_isErrorFree]);
       }
       this[_isErrorFree] = false;
-      return validationErrors;
+      return this.emit(VALIDATION_ERROR, validationErrors);
     }
 
     // TODO: Add some logging
     this[_isErrorFree] = false;
-    return this[_isErrorFree];
+    return this.emit(VALIDATION_ERROR, this[_isErrorFree]);
   }
 
   /**
@@ -187,22 +218,43 @@ class AddressWeatherHistoryInteractor {
    */
   async [Symbol.for("_assembleHistoricInfo")] () {
     const
-      _isErrorFree            = Symbol.for("_isErrorFree"),
-      pastWeekDailyTimestamps = this.historyEntity.getDailyStartOfDay(-7);
+      _isErrorFree                = Symbol.for("_isErrorFree"),
+      weatherGatewayPromises      = [],
+
+      { ASSEMBLE_SUCCESS, ERROR } = this.outputs,
+
+      pastWeekDailyTimestamps     = this.historyEntity.getDailyStartOfDay(-7);
 
     if (false !== this[_isErrorFree]) {
       for (let dx = 0; dx < pastWeekDailyTimestamps.length; dx++) {
-        const weatherInfo = await this.weatherGateway.getHistoricInfo(Object.assign(
-          this.coordinatesEntity.toJSON(), {
-            dateTime: pastWeekDailyTimestamps[dx],
-          },
-        ));
-        this.historyEntity.addObservationPoints([weatherInfo]);
+        weatherGatewayPromises.push(new Promise((resolve, reject) => {
+          this.weatherGateway.getHistoricInfo(Object.assign(
+            this.coordinatesEntity.toJSON(), {
+              dateTime: pastWeekDailyTimestamps[dx],
+            },
+          )).then(weatherInfo => {
+            resolve(weatherInfo);
+          }).catch(error => {
+            this[_isErrorFree] = false;
+            return reject(error);
+          });
+        }));
       }
+
+      return Promise.
+        all(weatherGatewayPromises).
+        then(weatherInfo => {
+          this.historyEntity.addObservationPoints(weatherInfo);
+        }).
+        then(() => {
+          return this.emit(ASSEMBLE_SUCCESS, this[_isErrorFree]);
+        }).catch(error => {
+          this[_isErrorFree] = false;
+          return this.emit(ERROR, error);
+        });
     }
 
-    // TODO: Add some logging
-    return this[_isErrorFree];
+    return this.emit(ASSEMBLE_SUCCESS, this[_isErrorFree]);
   }
 
   /**
@@ -269,6 +321,16 @@ class AddressWeatherHistoryInteractor {
     AddressWeatherHistoryInteractor.setPrivate("isErrorFree", value, this);
   }
 }
+
+AddressWeatherHistoryInteractor.setOutputs([
+  "DAILY_SUCCESS",
+  "COORDINATES_SUCCESS",
+  "ASSEMBLE_SUCCESS",
+  "COMPOSE_SUCCESS",
+  "VALIDATION_SUCCESS",
+  "VALIDATION_ERROR",
+  "ERROR",
+]);
 
 module.exports = {
   AddressGeocoderInterface,
