@@ -9,9 +9,6 @@ const
   /** @type {Operation} */
   Operation   = require("./Operation"),
 
-  // Private Map of Members
-  privateMap  = new Map(),
-
   /** @type {Address} */
   Address     = require("src/entities/Address"),
   /** @type {Coordinates} */
@@ -255,37 +252,6 @@ class AddressWeatherHistoryInteractor extends Operation {
     }
 
     return this.emit(ASSEMBLE_SUCCESS, this[_isErrorFree]);
-  }
-
-  /**
-   * A helper that retrieves the value for a privately stored property.
-   *
-   * @static
-   * @param   {String}                          privateVar - The name of the private variable
-   * @param   {AddressWeatherHistoryInteractor} ctx        - Context
-   * @public
-   * @returns {*}                                          - The value assigned to the private variable.
-   */
-  static getPrivate (privateVar, ctx) {
-    if (privateMap.has(ctx)) {
-      return privateMap.get(ctx).get(Symbol.for(`${privateVar}Private`));
-    }
-  }
-
-  /**
-   * A helper that assigns a value to a privately stored property.
-   *
-   * @static
-   * @param   {String}                          privateVar - The name of the private variable
-   * @param   {*}                               value      - The value to assign to the private variable.
-   * @param   {AddressWeatherHistoryInteractor} ctx        - Context
-   * @public
-   */
-  static setPrivate (privateVar, value, ctx) {
-    if (!privateMap.has(ctx)) {
-      privateMap.set(ctx, new Map());
-    }
-    privateMap.get(ctx).set(Symbol.for(`${privateVar}Private`), value);
   }
 
   /**

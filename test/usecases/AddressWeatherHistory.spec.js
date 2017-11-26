@@ -398,53 +398,6 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         const ignoredResponse = fakeAddressWeatherHistoryInteractor.validateAddress(fakeValidAddressAttrs);
       });
     });
-
-    suite(`getPrivate`, () => {
-      test(`should return undefined when getting from never defined private var`, async () => {
-        // Conditions
-        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = FakeDefaultAddressWeatherHistoryInteractor.getPrivate("fakeVarName", this);
-
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeResponse).
-          and.to.be.undefined();
-      });
-
-      test(`should return correct value when getting from a previously defined private var`, async () => {
-        // Conditions
-        FakeDefaultAddressWeatherHistoryInteractor.setPrivate("fakeVarName", "fakeValue", this);
-        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = FakeDefaultAddressWeatherHistoryInteractor.getPrivate("fakeVarName", this);
-
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeResponse).
-          and.not.to.be.undefined().
-          and.to.equal("fakeValue");
-      });
-    });
-
-    suite(`setPrivate`, () => {
-      test(`should return correct value when getting from a previously defined private var`, async () => {
-        // Conditions
-        FakeDefaultAddressWeatherHistoryInteractor.setPrivate("fakeVarName", "fakeValue", this);
-        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = FakeDefaultAddressWeatherHistoryInteractor.getPrivate("fakeVarName", this);
-
-        // Assertions
-        expect(fakeAddressWeatherHistoryInteractor).
-          and.not.to.be.undefined().
-          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(fakeResponse).
-          and.not.to.be.undefined().
-          and.to.equal("fakeValue");
-      });
-    });
   });
 
   suite(`private member`, () => {
