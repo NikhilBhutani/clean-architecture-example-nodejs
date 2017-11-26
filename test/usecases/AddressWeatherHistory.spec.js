@@ -11,6 +11,7 @@ const Code = require("code"),
       FakeHistoryEntity                      = require("src/entities/History"),
       {
         AddressGeocoderInterface:        FakeDefaultAddressGeocoderInterface,
+        TimezoneGatewayInterface:        FakeDefaultTimezoneGatewayInterface,
         WeatherGatewayInterface:         FakeDefaultWeatherGatewayInterface,
         AddressWeatherHistoryInteractor: FakeDefaultAddressWeatherHistoryInteractor,
       }                                      = require("src/usecases/AddressWeatherHistory");
@@ -130,6 +131,24 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
       });
     });
 
+    suite(`TimezoneGatewayInterface`, () => {
+      test(`should have a defined interface to be implemented`, async () => {
+        // Assertions
+        expect(FakeDefaultTimezoneGatewayInterface).
+          and.not.to.be.undefined();
+      });
+
+      test(`should have the "fromCoordinates()" method defined`, async () => {
+        // Conditions
+        const fakeTimezoneGatewayInterface = new FakeDefaultTimezoneGatewayInterface();
+
+        // Assertions
+        expect(fakeTimezoneGatewayInterface.fromCoordinates).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+    });
+
     suite(`WeatherGatewayInterface`, () => {
       test(`should have a defined interface to be implemented`, async () => {
         // Assertions
@@ -162,6 +181,85 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
   });
 
   suite(`public member`, () => {
+    suite(`composePreviousDaily()`, () => {
+      test(`should be defined`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+      });
+
+      test(`should always return a valid object when using valid parameters`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.to.contain([
+            "observationPoints",
+            "isErrorFree",
+          ],
+        );
+      });
+
+      test(`should return empty data when there are errors`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor             = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        fakeAddressWeatherHistoryInteractor[_isErrorFree]     = false;
+        fakeAddressWeatherHistoryInteractor.coordinatesEntity = new FakeCoordinatesEntity(fakeValidCoordinatesAttrs);
+        fakeAddressWeatherHistoryInteractor.historyEntity     = new FakeHistoryEntity(fakeValidHistoryAttrs);
+        const fakeResponse                                    = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse).
+          and.to.contain("observationPoints");
+        expect(fakeResponse.observationPoints).
+          and.to.be.an.array();
+        expect(fakeResponse.isErrorFree).
+          and.to.be.a.boolean().
+          and.to.be.false();
+      });
+
+      test(`should return valid data when there are NO errors`, async () => {
+        // Conditions
+        const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
+        const fakeResponse                        = await fakeAddressWeatherHistoryInteractor.composePreviousDaily(fakeValidAddressAttrs);
+
+        // Assertions
+        expect(fakeAddressWeatherHistoryInteractor).
+          and.not.to.be.undefined().
+          and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
+        expect(fakeAddressWeatherHistoryInteractor.composePreviousDaily).
+          and.not.to.be.undefined().
+          and.to.be.a.function();
+        expect(fakeResponse.observationPoints).
+          and.to.be.an.array().
+          and.to.have.length(7);
+        expect(fakeResponse.isErrorFree).
+          and.to.be.a.boolean().
+          and.to.be.true();
+      });
+    });
+
     suite(`getCoordinates()`, () => {
       test(`should be defined`, async () => {
         // Conditions
@@ -441,8 +539,7 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           and.not.to.be.instanceof(FakeHistoryEntity).
           and.to.equal("fake before value 3");
         expect(fakeResponse).
-          and.to.be.a.boolean().
-          and.to.be.false();
+          and.to.be.an.array();
       });
 
       test(`should compose when there were no previous errors`, async () => {
