@@ -4,6 +4,7 @@
 
 const
   moment      = require("moment-timezone"),
+  _           = require("lodash"),
 
   // Private Map of Members
   privateMap  = new Map(),
@@ -50,6 +51,34 @@ class AddressWeatherHistoryInteractor {
   }
 
   /**
+   * Composes weather history data for the past week.
+   *
+   * @public
+   * @param streetNumber
+   * @param streetName
+   * @param city
+   * @param state
+   * @param zipCode
+   * @returns {Promise.<void>}
+   */
+  async composePreviousDaily ({ streetNumber, streetName, city, state, zipCode }) {
+    const
+      _isErrorFree          = Symbol.for("_isErrorFree"),
+      _composeHistoryEntity = Symbol.for("_composeHistoryEntity"),
+      _assembleHistoricInfo = Symbol.for("_assembleHistoricInfo");
+
+    await this.getCoordinates({ streetNumber, streetName, city, state, zipCode });
+    await this[_composeHistoryEntity]();
+    await this[_assembleHistoricInfo]();
+
+    const observationPoints = _.get(this.historyEntity.toJSON(), "observationPoints", []);
+    return Promise.resolve({
+      observationPoints: observationPoints,
+      isErrorFree:       this[_isErrorFree],
+    });
+  }
+
+  /**
    * Obtains the GPS coordinates of a standard address.
    *
    * @public
@@ -61,7 +90,8 @@ class AddressWeatherHistoryInteractor {
    * @returns {Promise.<{latitude: Number, longitude: Number}|Boolean>}
    */
   async getCoordinates ({ streetNumber, streetName, city, state, zipCode }) {
-    const _isErrorFree = Symbol.for("_isErrorFree");
+    const
+      _isErrorFree = Symbol.for("_isErrorFree");
 
     this.validateAddress({ streetNumber, streetName, city, state, zipCode });
 
@@ -141,6 +171,8 @@ class AddressWeatherHistoryInteractor {
         this.historyEntity = historyEntity;
         return this[_isErrorFree];
       }
+      this[_isErrorFree] = false;
+      return validationErrors;
     }
 
     // TODO: Add some logging
