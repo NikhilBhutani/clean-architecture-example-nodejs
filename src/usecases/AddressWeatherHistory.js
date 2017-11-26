@@ -3,21 +3,21 @@
  */
 
 const
-  moment      = require("moment-timezone"),
-  _           = require("lodash"),
+  moment                    = require("moment-timezone"),
+  _                         = require("lodash"),
 
   /** @type {Operation} */
-  Operation   = require("./Operation"),
+  Operation                 = require("./Operation"),
 
-  // Private Map of Members
-  privateMap  = new Map(),
+  /** @type {AddressInputInterface} */
+  { AddressInputInterface } = require("src/controllers/AddressWeather"), // TODO: Enforce implementation???
 
   /** @type {Address} */
-  Address     = require("src/entities/Address"),
+  Address                   = require("src/entities/Address"),
   /** @type {Coordinates} */
-  Coordinates = require("src/entities/Coordinates"),
+  Coordinates               = require("src/entities/Coordinates"),
   /** @type {History} */
-  History     = require("src/entities/History");
+  History                   = require("src/entities/History");
 
 /**
  * @interface
@@ -242,37 +242,6 @@ class AddressWeatherHistoryInteractor extends Operation {
     }
 
     return this.emit(ASSEMBLE_SUCCESS, this[_isErrorFree]);
-  }
-
-  /**
-   * A helper that retrieves the value for a privately stored property.
-   *
-   * @static
-   * @param   {String}                          privateVar - The name of the private variable
-   * @param   {AddressWeatherHistoryInteractor} ctx        - Context
-   * @public
-   * @returns {*}                                          - The value assigned to the private variable.
-   */
-  static getPrivate (privateVar, ctx) {
-    if (privateMap.has(ctx)) {
-      return privateMap.get(ctx).get(Symbol.for(`${privateVar}Private`));
-    }
-  }
-
-  /**
-   * A helper that assigns a value to a privately stored property.
-   *
-   * @static
-   * @param   {String}                          privateVar - The name of the private variable
-   * @param   {*}                               value      - The value to assign to the private variable.
-   * @param   {AddressWeatherHistoryInteractor} ctx        - Context
-   * @public
-   */
-  static setPrivate (privateVar, value, ctx) {
-    if (!privateMap.has(ctx)) {
-      privateMap.set(ctx, new Map());
-    }
-    privateMap.get(ctx).set(Symbol.for(`${privateVar}Private`), value);
   }
 
   /**
