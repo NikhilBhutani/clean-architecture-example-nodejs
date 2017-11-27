@@ -19,9 +19,18 @@ class AddressGeocoderInterface {
   }
 }
 
+/**
+ * @interface
+ */
+class TimezoneGatewayInterface {
+  fromCoordinates ({ latitude, longitude }) {
+  }
+}
+
 class AddressWeatherHistoryInteractor {
-  constructor ({ geocoderGateway }) {
+  constructor ({ geocoderGateway, timezoneGateway }) {
     this.geoCodeFromAddress = geocoderGateway.fromAddress;
+    this.lookupTimezone     = timezoneGateway.fromCoordinates;
 
     // Init privates
     this[Symbol.for("_isErrorFree")] = true;
@@ -125,6 +134,18 @@ class AddressWeatherHistoryInteractor {
   }
 
   /**
+   * Retrieves the timezone from an external source.
+   *
+   * @returns {Promise.<{timezone: *}>}
+   * @private
+   */
+  async [Symbol.for("_setTimezone")] () {
+    const { timezone } = await this.lookupTimezone(this.coordinatesEntity.toJSON());
+    this.timezone      = timezone;
+    return { timezone };
+  }
+
+  /**
    * Has an error occurred?
    *
    * @private
@@ -148,5 +169,6 @@ class AddressWeatherHistoryInteractor {
 
 module.exports = {
   AddressGeocoderInterface,
+  TimezoneGatewayInterface,
   AddressWeatherHistoryInteractor,
 };

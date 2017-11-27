@@ -35,6 +35,12 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         return fakeValidCoordinatesAttrs;
       },
     },
+
+    timezoneGateway: {
+      fromCoordinates: async function fakeFromCoordinates () {
+        return { timezone: "America/New_York" };
+      },
+    },
   };
 
   suite(`interface`, () => {
@@ -143,6 +149,12 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           geocoderGateway: {
             fromAddress: async function fakeFromAddress (singleLineAddress) {
               return {};
+            },
+          },
+
+          timezoneGateway: {
+            fromCoordinates: async function fakeFromCoordinates () {
+              return { timezone: "America/New_York" };
             },
           },
         };
