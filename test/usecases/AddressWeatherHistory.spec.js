@@ -129,8 +129,6 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           and.not.to.be.undefined().
           and.to.be.a.function();
         expect(fakeResponse).
-          and.to.be.an.instanceof(FakeCoordinatesEntity);
-        expect(fakeResponse.toJSON()).
           and.to.be.an.object().
           and.to.contain([
             "longitude",
@@ -159,14 +157,11 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           and.not.to.be.undefined().
           and.to.be.a.function();
         expect(fakeResponse).
-          and.not.to.be.an.instanceof(FakeCoordinatesEntity).
           and.to.be.a.boolean().
           and.to.be.false();
       });
     });
-  });
 
-  suite(`static public method`, () => {
     suite(`validateAddress()`, () => {
       test(`should not be undefined when class is correctly instantiated`, async () => {
         // Conditions
@@ -176,14 +171,14 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
         expect(fakeAddressWeatherHistoryInteractor).
           and.not.to.be.undefined().
           and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
-        expect(FakeDefaultAddressWeatherHistoryInteractor.validateAddress).
+        expect(fakeAddressWeatherHistoryInteractor.validateAddress).
           and.to.be.a.function();
       });
 
       test(`should return false when addressData argument is empty`, () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = FakeDefaultAddressWeatherHistoryInteractor.validateAddress({});
+        const fakeResponse                        = fakeAddressWeatherHistoryInteractor.validateAddress({});
 
         // Assertions
         expect(fakeAddressWeatherHistoryInteractor).
@@ -194,28 +189,18 @@ suite(`Usecase :: AddressWeatherHistory`, () => {
           and.to.be.false();
       });
 
-      test(`should return a valid addressEntity when addressData argument is valid`, () => {
+      test(`should assign a valid addressEntity to a member property when addressData argument is valid`, () => {
         // Conditions
         const fakeAddressWeatherHistoryInteractor = new FakeDefaultAddressWeatherHistoryInteractor(fakeConstructorParams);
-        const fakeResponse                        = FakeDefaultAddressWeatherHistoryInteractor.validateAddress(fakeValidAddressAttrs);
+        const fakeResponse                        = fakeAddressWeatherHistoryInteractor.validateAddress(fakeValidAddressAttrs);
 
         // Assertions
         expect(fakeAddressWeatherHistoryInteractor).
           and.not.to.be.undefined().
           and.to.be.instanceof(FakeDefaultAddressWeatherHistoryInteractor);
         expect(fakeResponse).
-          and.not.to.be.a.boolean().
-          and.not.to.be.false().
-          and.to.an.instanceof(FakeAddressEntity);
-        expect(fakeResponse.toJSON()).
-          and.to.contain([
-            "streetNumber",
-            "streetName",
-            "city",
-            "state",
-            "zipCode",
-          ],
-        );
+          and.to.be.a.boolean().
+          and.not.to.be.false();
       });
     });
 

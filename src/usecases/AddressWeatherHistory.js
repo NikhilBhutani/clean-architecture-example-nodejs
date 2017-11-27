@@ -36,54 +36,61 @@ class AddressWeatherHistoryInteractor {
    * @param city
    * @param state
    * @param zipCode
-   * @returns {Promise.<Coordinates|Boolean>}
+   * @returns {Promise.<{latitude: Number, longitude: Number}|Boolean>}
    */
   async getCoordinates ({ streetNumber, streetName, city, state, zipCode }) {
-    const
-      addressEntity    = AddressWeatherHistoryInteractor.validateAddress({ streetNumber, streetName, city, state, zipCode }),
-      coordinatesAttrs = await this.geoCodeFromAddress(addressEntity.singleLineAddress);
+    const _isErrorFree = Symbol.for("_isErrorFree");
 
-    if (false !== addressEntity && false !== coordinatesAttrs) {
+    this.validateAddress({ streetNumber, streetName, city, state, zipCode });
+
+    if (this[_isErrorFree]) {
       const
+        coordinatesAttrs  = await this.geoCodeFromAddress(this.addressEntity.singleLineAddress),
         coordinatesEntity = new Coordinates(coordinatesAttrs),
 
         {
           valid: isValidCoordinates,
         }                 = coordinatesEntity.validate();
       if (isValidCoordinates) {
-        return coordinatesEntity;
+        this.coordinatesEntity = coordinatesEntity;
+        return this.coordinatesEntity.toJSON();
       }
+      // TODO: Add some logging
+      this[_isErrorFree] = false;
     }
 
     // TODO: Add some logging
-    return false;
+    this[_isErrorFree] = false;
+    return this[_isErrorFree];
   }
 
   /**
    * Validates the input address attributes.
    *
    * @public
-   * @static
    * @param streetNumber
    * @param streetName
    * @param city
    * @param state
    * @param zipCode
-   * @returns {Address|Boolean}
+   * @returns {Boolean}
    */
-  static validateAddress ({ streetNumber, streetName, city, state, zipCode }) {
+  validateAddress ({ streetNumber, streetName, city, state, zipCode }) {
     const
+      _isErrorFree  = Symbol.for("_isErrorFree"),
       addressEntity = new Address({ streetNumber, streetName, city, state, zipCode }),
 
       {
         valid: isValidAddress,
       }             = addressEntity.validate();
     if (isValidAddress) {
-      return addressEntity;
+      this.addressEntity = addressEntity;
+      return this[_isErrorFree];
     }
 
     // TODO: Add some logging
-    return isValidAddress;
+    this[_isErrorFree] = false;
+    return this[_isErrorFree];
   }
 
   /**
