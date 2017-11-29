@@ -10,7 +10,7 @@ const
   Operation                 = require("./Operation"),
 
   /** @type {AddressInputInterface} */
-  { AddressInputInterface } = require("src/controllers/AddressWeather"), // TODO: Enforce implementation???
+  { AddressInputInterface } = require("src/controllers/WeatherAddress"), // TODO: Enforce implementation???
 
   /** @type {Address} */
   Address                   = require("src/entities/Address"),
