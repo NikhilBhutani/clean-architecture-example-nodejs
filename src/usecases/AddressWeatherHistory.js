@@ -3,18 +3,21 @@
  */
 
 const
-  _           = require("lodash"),
-  moment      = require("moment-timezone"),
+  _                         = require("lodash"),
+  moment                    = require("moment-timezone"),
 
   /** @type {Operation} */
-  Operation   = require("./Operation"),
+  Operation                 = require("./Operation"),
+
+  /** @type {AddressInputInterface} */
+  { AddressInputInterface } = require("src/controllers/WeatherAddress"), // TODO: Enforce implementation???
 
   /** @type {Address} */
-  Address     = require("src/entities/Address"),
+  Address                   = require("src/entities/Address"),
   /** @type {Coordinates} */
-  Coordinates = require("src/entities/Coordinates"),
+  Coordinates               = require("src/entities/Coordinates"),
   /** @type {History} */
-  History     = require("src/entities/History");
+  History                   = require("src/entities/History");
 
 /**
  * @interface
