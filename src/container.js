@@ -22,6 +22,7 @@ const
   { TimezoneGateway }                 = require("./gateways/Timezone"),
   { WeatherGateway }                  = require("./gateways/Weather"),
 
+  Application                         = require("./Application"),
   Server                              = require("./http/Server"),
   router                              = require("./http/router"),
 
@@ -38,6 +39,7 @@ container.
     configGateway: asClass(ConfigGateway, { lifetime: Lifetime.SINGLETON }),
     environment:   asClass(Environment, { lifetime: Lifetime.SINGLETON }),
     server:        asClass(Server, { lifetime: Lifetime.SINGLETON }),
+    app:           asClass(Application, { lifetime: Lifetime.SINGLETON }),
   }).
   register({
     router: asFunction(router, { lifetime: Lifetime.SINGLETON }),
