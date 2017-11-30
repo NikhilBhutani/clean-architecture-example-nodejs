@@ -9,7 +9,7 @@ const Code = require("code"),
       {
         AddressInputInterface:    FakeAddressInputInterface,
         WeatherAddressController: FakeWeatherAddressController,
-      }                                      = require("src/controllers/WeatherAddress");
+      }                                      = require("src/http/controllers/WeatherAddress");
 
 suite(`Controller :: WeatherAddress`, () => {
   suite(`AddressInputInterface`, () => {

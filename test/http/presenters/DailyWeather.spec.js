@@ -6,7 +6,7 @@ const Code = require("code"),
       { expect }                             = Code,
       { suite, test, beforeEach, afterEach } = lab,
 
-      FakeDefaultDailyWeatherPresenter       = require("src/presenters/DailyWeather"),
+      FakeDefaultDailyWeatherPresenter       = require("src/http/presenters/DailyWeather"),
 
       {
         WeatherHistoryPresenterInterface: FakeDefaultWeatherHistoryPresenterInterface,

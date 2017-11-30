@@ -1,5 +1,5 @@
 /**
- * @module ./src/controllers/WeatherAddress
+ * @module ./src/http/controllers/WeatherAddress
  */
 
 /**

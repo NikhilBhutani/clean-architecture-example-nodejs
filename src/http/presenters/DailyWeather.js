@@ -1,3 +1,7 @@
+/**
+ * @module ./src/http/presenter/DailyWeather
+ */
+
 const
   Implements = require("contracts-es6"),
 
@@ -10,6 +14,13 @@ class DailyWeatherPresenter extends Implements(WeatherHistoryPresenterInterface)
     super();
   }
 
+  /**
+   * Transforms the data to fit the need of a controller's expectation.
+   *
+   * @param observationPoints
+   * @param isErrorFree
+   * @returns {{data: *, success: *}}
+   */
   toOutputPort ({ observationPoints, isErrorFree }) {
     return {
       data:    observationPoints,
