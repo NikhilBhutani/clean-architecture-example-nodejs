@@ -8,13 +8,15 @@ const
 
   controller = require("./createControllerRoutes");
 
-module.exports = () => {
+module.exports = ({ containerMiddleware }) => {
   const
     router    = Router(),
     apiRouter = Router();
 
   // Middleware inits
-  apiRouter.use(bodyParser.json());
+  apiRouter.
+    use(bodyParser.json()).
+    use(containerMiddleware);
 
   // List of routes if more than one
   apiRouter.use("/weather/address", controller("WeatherAddress"));
