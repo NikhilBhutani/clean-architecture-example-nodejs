@@ -2,6 +2,10 @@
  * @module ./src/http/controllers/WeatherAddress
  */
 
+const
+  { Router } = require("express"),
+  { inject } = require("awilix-express");
+
 /**
  * @interface
  */
@@ -17,6 +21,20 @@ class AddressInputInterface {
 }
 
 const WeatherAddressController = {
+  get router () {
+    const router = Router();
+
+    router.use(inject("dailyWeatherPresenter"));
+    // router.use(inject("coordinatesPresenter"));
+    // router.use(inject("validityPresenter"));
+
+    router.post("/weather/address/week/past", inject("addressWeatherHistory"), this.showPastWeek);
+    router.post("/weather/address/coordinates", inject("addressWeatherHistory"), this.showCoordinates);
+    router.post("/weather/address/validate", inject("addressWeatherHistory"), this.validate);
+
+    return router;
+  },
+
   showPastWeek (req, res, next) {
     const
       {
