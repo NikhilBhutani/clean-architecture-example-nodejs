@@ -271,8 +271,11 @@ class AddressWeatherHistoryInteractor extends Operation {
    * @private
    */
   async [Symbol.for("_setTimezone")] () {
-    const { timezone } = await this.timezoneGateway.fromCoordinates(this.coordinatesEntity.toJSON());
-    this.timezone      = timezone;
+    const { timezone } = await this.timezoneGateway.fromCoordinates(
+      this.coordinatesEntity.toJSON(),
+    );
+
+    this.timezone = timezone;
     return { timezone };
   }
 
