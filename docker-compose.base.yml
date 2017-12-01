@@ -1,0 +1,28 @@
+version: "2.3"
+
+services:
+  # =====================================
+  #   Node.Js Container
+  #   Provides the Node.Js runtime image
+  # =====================================
+  nodejs:
+    image: "brace/nodejs:base"
+    build:
+      target: "nodejs_from_package"
+      context: "."
+      args:
+        # Build args allow one to experiment with different versions and npm log verbosity
+        ARG_GOSU_GPG_KEY: ${GOSU_GPG_KEY}
+        ARG_GOSU_VERSION: ${GOSU_VERSION}
+        ARG_FINAL_STAGE: "nodejs_from_package"
+        ARG_NODEJS_FULL_VERSION: ${NODEJS_FULL_VERSION}
+        ARG_NPM_CONFIG_LOGLEVEL: ${NPM_CONFIG_LOGLEVEL}
+        ARG_NPM_VERSION: ${NPM_VERSION}
+    restart: "always"
+    mem_limit: "128M"
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - NODE_PATH=.
+    command: [ "node", "index.js" ]
