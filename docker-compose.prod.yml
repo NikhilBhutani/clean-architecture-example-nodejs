@@ -1,0 +1,25 @@
+version: "2.3"
+
+services:
+
+  # =====================================
+  #   Node.Js Container
+  #   Provides the Node.Js runtime image
+  # =====================================
+  nodejs:
+    image: "brucelarsen/weather-app-nodejs:prod"
+    build:
+      target: "nodejs_prod"
+      args:
+        # Build args allow one to experiment with different versions and npm log verbosity
+        ARG_FINAL_STAGE: "nodejs_prod"
+#        ARG_GOSU_GPG_KEY:
+#        ARG_GOSU_VERSION:
+#        ARG_NODEJS_FULL_VERSION:
+#        ARG_NPM_CONFIG_LOGLEVEL:
+#        ARG_NPM_VERSION:
+    extends:
+      file: "docker-compose.base.yml"
+      service: "nodejs"
+    env_file:
+      - "prod.env"

@@ -1,0 +1,42 @@
+version: "2.3"
+
+services:
+  # =====================================
+  #   Node.Js cluster of workers
+  #   Provides the Node.Js runtime image
+  # =====================================
+  nodejs-worker:
+    image: "brucelarsen/weather-app-nodejs:${NAMED_DEPLOYMENT}"
+    build:
+      target: "nodejs_local"
+      args:
+        # Build args allow one to experiment with different versions and npm log verbosity
+        ARG_FINAL_STAGE: "nodejs_local"
+#        ARG_GOSU_GPG_KEY:
+#        ARG_GOSU_VERSION:
+#        ARG_NODEJS_FULL_VERSION:
+#        ARG_NPM_CONFIG_LOGLEVEL:
+#        ARG_NPM_VERSION:
+    extends:
+      file: "docker-compose.prod.yml"
+      service: "nodejs"
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - "local.env"
+    command: [ "node", "index.js" ]
+    volumes:
+      # This allows the developer to make changes in his/her local dev environment while causing those changes to
+      # instantly appear within the container without having to rebuild the container.
+      - ".:/app"
+      # This creates isolation between the container's 'node_modules' folder and the developer's 'node_modules' folder.
+      - "/app/node_modules"
+
+  nodejs:
+    extends:
+      service: "nodejs-worker"
+#    command: [ "node", "--inspect-brk=0.0.0.0:9229", "index.js" ]
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:5858:5858"
+      - "127.0.0.1:9229:9229"
